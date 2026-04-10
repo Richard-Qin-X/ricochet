@@ -18,26 +18,28 @@
 
 #pragma once
 
-#include "ricochet/parser/dom_tree.hh"
+#include <termios.h>
 
-namespace ricochet::render {
+namespace ricochet::tui {
 
-class Renderer
-{
+class Terminal {
 public:
-  Renderer() = default;
-  ~Renderer() = default;
+    Terminal();
+    ~Terminal();
 
-  Renderer( const Renderer& ) = delete;
-  Renderer& operator=( const Renderer& ) = delete;
-  Renderer( Renderer&& ) = delete;
-  Renderer& operator=( Renderer&& ) = delete;
+    Terminal(const Terminal&) = delete;
+    Terminal& operator=(const Terminal&) = delete;
+    Terminal(Terminal&&) = delete;
+    Terminal& operator=(Terminal&&) = delete;
 
-  /**
-   * @brief Traverse the DOM tree and output the formatted result to the terminal using ANSI escape codes
-   * @param node The root node of the DOM tree
-   */
-  std::string render( const parser::DomNode& node ) const;
+    // Read a single key
+    char read_key() const;
+    
+    // Clear screen and move cursor to top-left
+    void clear_screen() const;
+
+private:
+    struct termios original_termios_{}; // Save terminal original state
 };
 
-} // namespace ricochet::render
+} // namespace ricochet::tui
