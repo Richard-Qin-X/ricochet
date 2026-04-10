@@ -18,44 +18,27 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <variant>
+#include "ricochet/parser/dom_tree.hh"
+#include "ricochet/parser/html_lexer.hh"
+
 #include <vector>
 
 namespace ricochet::parser {
 
-struct TextToken {
-    std::string content{};
-};
-
-struct TagOpenToken {
-    std::string name{};
-};
-
-struct TagCloseToken {
-    std::string name{};
-};
-
-using HtmlToken = std::variant<TextToken, TagOpenToken, TagCloseToken>;
-
-class HtmlLexer
-{
+class TreeBuilder {
 public:
-  HtmlLexer() = default;
-  ~HtmlLexer() = default;
+    TreeBuilder() = default;
+    ~TreeBuilder() = default;
 
-  HtmlLexer( const HtmlLexer& ) = delete;
-  HtmlLexer& operator=( const HtmlLexer& ) = delete;
-  HtmlLexer( HtmlLexer&& ) = delete;
-  HtmlLexer& operator=( HtmlLexer&& ) = delete;
+    TreeBuilder(const TreeBuilder&) = delete;
+    TreeBuilder& operator=(const TreeBuilder&) = delete;
+    TreeBuilder(TreeBuilder&&) = delete;
+    TreeBuilder& operator=(TreeBuilder&&) = delete;
 
-  /**
-   * @brief Perform lexical analysis to convert HTML source code into a structured sequence of tokens
-   */
-  std::vector<HtmlToken> tokenize(std::string_view html) const;
-
-private:
+    /**
+     * @brief Assemble a one-dimensional token sequence into a multi-dimensional DOM tree
+     */
+    DomNode build(const std::vector<HtmlToken>& tokens) const;
 };
 
 } // namespace ricochet::parser

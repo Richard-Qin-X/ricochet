@@ -19,43 +19,17 @@
 #pragma once
 
 #include <string>
-#include <string_view>
-#include <variant>
 #include <vector>
 
 namespace ricochet::parser {
 
-struct TextToken {
-    std::string content{};
-};
-
-struct TagOpenToken {
-    std::string name{};
-};
-
-struct TagCloseToken {
-    std::string name{};
-};
-
-using HtmlToken = std::variant<TextToken, TagOpenToken, TagCloseToken>;
-
-class HtmlLexer
-{
-public:
-  HtmlLexer() = default;
-  ~HtmlLexer() = default;
-
-  HtmlLexer( const HtmlLexer& ) = delete;
-  HtmlLexer& operator=( const HtmlLexer& ) = delete;
-  HtmlLexer( HtmlLexer&& ) = delete;
-  HtmlLexer& operator=( HtmlLexer&& ) = delete;
-
-  /**
-   * @brief Perform lexical analysis to convert HTML source code into a structured sequence of tokens
-   */
-  std::vector<HtmlToken> tokenize(std::string_view html) const;
-
-private:
+/**
+ * @brief DOM Node. Pure value semantics, no pointers.
+ */
+struct DomNode {
+    std::string tag_name{};    // If empty, it's a pure text node
+    std::string text_content{}; // Only meaningful when tag_name is empty
+    std::vector<DomNode> children{}; // Recursive child nodes list
 };
 
 } // namespace ricochet::parser
